@@ -6,11 +6,8 @@ use crate::errors::SrvResult;
 use crate::models::{NewSignature, Signature};
 use crate::schema::signatures;
 
-use actix_web::http::StatusCode;
 use actix_web::{error, get, post, web, HttpResponse, Responder};
-use anyhow::anyhow;
 use diesel::{insert_into, prelude::*};
-use opentelemetry::trace::Status;
 use serde_json::json;
 
 #[post("/signatures")]
@@ -51,16 +48,12 @@ pub async fn query_signature(
     req: web::Path<String>,
 ) -> actix_web::Result<impl Responder, SrvError> {
     let bytes_str = req.into_inner();
-    let bytes_str_clone = bytes_str.clone();
 
     let signature = web::block(move || {
         let mut conn = pool.get()?;
         get_signature(&mut conn, bytes_str)
     })
     .await??;
-    if signature.is_none() {
-        return Err(SrvErrorKind::NotFound(bytes_str_clone).into());
-    }
     Ok(HttpResponse::Ok().json(signature))
 }
 
