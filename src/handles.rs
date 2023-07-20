@@ -1,8 +1,5 @@
-use crate::database::DbConnection;
-use crate::database::DbPool;
-use crate::errors::SrvError;
-use crate::errors::SrvErrorKind;
-use crate::errors::SrvResult;
+use crate::database::{DbConnection, DbPool};
+use crate::errors::{SrvError, SrvResult};
 use crate::models::{NewSignature, Signature};
 use crate::schema::signatures;
 
