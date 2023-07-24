@@ -6,6 +6,7 @@ use crate::schema::signatures;
 use actix_web::{error, get, post, web, HttpResponse, Responder};
 use diesel::{insert_into, prelude::*};
 use serde_json::json;
+use tokio::time::sleep;
 
 #[post("/signatures")]
 pub async fn add_signature(
@@ -45,7 +46,7 @@ pub async fn query_signature(
     req: web::Path<String>,
 ) -> actix_web::Result<impl Responder, SrvError> {
     let bytes_str = req.into_inner();
-
+    sleep(std::time::Duration::from_secs(12)).await;
     let signature = web::block(move || {
         let mut conn = pool.get()?;
         get_signature(&mut conn, bytes_str)

@@ -1,22 +1,21 @@
-[package]
-name = "srv-api"
+[workspace]
+
+members = ["crates/srv-api", "crates/srv-tracing"]
+
+# Explicitly set the resolver to version 2, which is the default for packages with edition >= 2021
+# https://doc.rust-lang.org/edition-guide/rust-2021/default-cargo-resolver.html
+resolver = "2"
+
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.70"
+license = "MIT OR Apache-2.0"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[workspace.dependencies]
+# tracing
+tracing = "0.1.37"
 
-[dependencies]
-actix-web = "4.3.1"
-
-anyhow = "1.0.72"
-thiserror = "1.0.43"
-dotenvy = "0.15.7"
-serde = { version = "1.0.1", features = ["derive"] }
-serde_json = "1.0.103"
-
-# database
-diesel = { version = "2.1.0", features = ["postgres", "r2d2"] }
-r2d2 = "0.8.10"
 
 # opentelemetry
 opentelemetry = { version = "0.19.0", features = [
@@ -27,12 +26,3 @@ opentelemetry-jaeger = { version = "0.18.0", features = [
 	"rt-tokio",
 	"rt-tokio-current-thread",
 ] }
-
-# tracing
-tracing = "0.1.37"
-tracing-actix-web = "0.7.5"
-tracing-bunyan-formatter = "0.3.8"
-tracing-error = "0.2.0"
-tracing-opentelemetry = "0.19.0"
-tracing-subscriber = { version = "0.3.17", features = ["env-filter", "fmt"] }
-validator = "0.16.1"
