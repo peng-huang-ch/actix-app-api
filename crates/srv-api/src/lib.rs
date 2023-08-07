@@ -1,28 +1,41 @@
 #![feature(async_closure)]
+
 use actix_web::{web, App, HttpServer};
-use dotenvy::dotenv;
+use srv_storage::init_db;
 use tokio::sync::oneshot;
 use tracing::{debug, warn};
 use tracing_actix_web::TracingLogger;
 
-mod database;
-mod errors;
+#[cfg(feature = "async")]
+mod async_handles;
+
+#[cfg(feature = "sync")]
 mod handles;
-mod models;
-mod schema;
+
+mod errors;
 mod shutdown;
-use database::init_db_pool;
-use handles::{add_signature, query_signature};
+
+#[cfg(feature = "async")]
+use crate::async_handles::{add_signature, query_signature};
+
+#[cfg(feature = "sync")]
+use crate::handles::{add_signature, query_signature};
+
 use shutdown::shutdown;
 use srv_tracing::init_logging;
 use std::time::Duration;
 
 pub async fn init() -> std::io::Result<()> {
-    dotenv().expect(".env file not found");
+    dotenvy::dotenv().expect(".env file not found");
     let guard = init_logging("app".to_string(), "debug".to_string());
 
     debug!(target: "init", "Initializing database...");
-    let pool = init_db_pool();
+    let database_url = std::env::var("DATABASE_URL").expect("Expected DATABASE_URL to be set");
+    #[cfg(feature = "sync")]
+    let pool = init_db(database_url.as_str());
+
+    #[cfg(feature = "async")]
+    let pool = init_db(database_url.as_str()).await;
     debug!(target: "init", "Database connected.");
 
     let srv: actix_web::dev::Server = HttpServer::new(move || {

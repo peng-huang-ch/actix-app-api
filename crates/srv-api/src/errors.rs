@@ -2,6 +2,7 @@
 
 use actix_web::{error::BlockingError, http::StatusCode};
 use serde_json::json;
+use srv_storage::{DbError, DbRunError};
 use std::fmt::{Debug, Display};
 use tracing_error::SpanTrace;
 
@@ -26,10 +27,13 @@ pub enum SrvErrorKind {
     BlockingError(#[from] BlockingError),
 
     #[error("database `{0}` is not available")]
-    R2d2DatabaseError(#[from] r2d2::Error),
+    DatabaseRunError(#[from] DbRunError),
 
-    #[error("database `{0}` is not available")]
-    DatabaseError(#[from] diesel::result::Error),
+    #[error("database is not available: `{0}`")]
+    DatabaseError(#[from] DbError),
+    // #[error("database is not available: `{0}`")]
+    // PoolDatabaseError(#[from] DbRunError),
+    // PoolDatabaseError(#[from] bb8::RunError<diesel_async::pooled_connection::PoolError>),
 }
 
 #[derive(Debug)]
@@ -74,7 +78,7 @@ impl actix_web::error::ResponseError for SrvError {
             SrvErrorKind::ValidationError(_) => StatusCode::BAD_REQUEST,
             SrvErrorKind::NotFound(_) => StatusCode::NOT_FOUND,
             SrvErrorKind::Any(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            SrvErrorKind::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            // SrvErrorKind::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }

@@ -13,13 +13,12 @@ actix-web = "4.3.1"
 anyhow = "1.0.72"
 thiserror = "1.0.43"
 dotenvy = "0.15.7"
-serde = { version = "1.0.1", features = ["derive"] }
-serde_json = "1.0.103"
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
 
 # database
-diesel = { version = "2.1.0", features = ["postgres", "r2d2"] }
-r2d2 = "0.8.10"
 
+srv-storage = { path = "../srv-storage" }
 srv-tracing = { path = "../srv-tracing" }
 
 # opentelemetry
@@ -43,3 +42,8 @@ tracing-subscriber = { version = "0.3.17", features = ["env-filter", "fmt"] }
 validator = "0.16.1"
 
 tokio = { version = "1.29.0", features = ["full"] }
+
+[features]
+sync = ["srv-storage/sync"]
+async = ["srv-storage/async"]
+default = ["sync"]

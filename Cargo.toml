@@ -1,6 +1,10 @@
 [workspace]
 
-members = ["crates/srv-api", "crates/srv-tracing"]
+members = [
+	"crates/srv-api",
+	"crates/srv-storage", # storage, pg
+	"crates/srv-tracing",
+]
 
 # Explicitly set the resolver to version 2, which is the default for packages with edition >= 2021
 # https://doc.rust-lang.org/edition-guide/rust-2021/default-cargo-resolver.html
@@ -13,9 +17,12 @@ rust-version = "1.70"
 license = "MIT OR Apache-2.0"
 
 [workspace.dependencies]
+tokio = { version = "1.16.1", features = ["full"] }
+serde = { version = "1.0.1", features = ["derive"] }
+serde_json = "1.0.1"
+
 # tracing
 tracing = "0.1.37"
-
 
 # opentelemetry
 opentelemetry = { version = "0.19.0", features = [

@@ -1,6 +1,7 @@
 -- Your SQL goes here
-CREATE TABLE signatures (
-  id SERIAL PRIMARY KEY,  
+CREATE TABLE signatures
+(
+  id SERIAL PRIMARY KEY,
   signature VARCHAR NOT NULL,
   bytes VARCHAR NOT NULL,
   abi TEXT,
