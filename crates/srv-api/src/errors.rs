@@ -1,14 +1,15 @@
 // https://github.com/LemmyNet/lemmy/blob/main/crates/utils/src/error.rs#L73
-
 use actix_web::{error::BlockingError, http::StatusCode};
 use serde_json::json;
 use srv_storage::{DbError, DbRunError};
 use std::fmt::{Debug, Display};
 use tracing_error::SpanTrace;
 
+#[allow(dead_code)]
 pub type SrvResult<T> = Result<T, SrvError>;
 
 // https://docs.rs/tracing-error/latest/tracing_error/
+#[allow(dead_code)]
 #[derive(Debug, thiserror::Error)]
 pub enum SrvErrorKind {
     #[error("{0}")]
@@ -31,9 +32,6 @@ pub enum SrvErrorKind {
 
     #[error("database is not available: `{0}`")]
     DatabaseError(#[from] DbError),
-    // #[error("database is not available: `{0}`")]
-    // PoolDatabaseError(#[from] DbRunError),
-    // PoolDatabaseError(#[from] bb8::RunError<diesel_async::pooled_connection::PoolError>),
 }
 
 #[derive(Debug)]

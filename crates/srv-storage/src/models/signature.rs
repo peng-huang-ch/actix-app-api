@@ -1,5 +1,3 @@
-// use diesel::prelude::*;
-use diesel;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 

@@ -12,7 +12,7 @@ pub type DbConnection<'a> = PooledConnection<'a, AsyncPgConnection>;
 pub type DbRunError = RunError;
 pub type DbError = diesel::result::Error;
 
-#[tracing::instrument()]
+#[tracing::instrument(skip(database_url))]
 pub async fn init_db(database_url: &str) -> DbPool {
     let mgr = AsyncDieselConnectionManager::<AsyncPgConnection>::new(database_url);
 

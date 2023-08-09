@@ -44,6 +44,6 @@ validator = "0.16.1"
 tokio = { version = "1.29.0", features = ["full"] }
 
 [features]
+default = ["async"]
 sync = ["srv-storage/sync"]
 async = ["srv-storage/async"]
-default = ["sync"]

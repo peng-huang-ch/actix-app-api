@@ -1,10 +1,12 @@
 use crate::errors::SrvError;
-use srv_storage::models::signature::{NewSignature, Signature};
-use srv_storage::schema::signatures;
-
 use actix_web::{get, post, web, HttpResponse, Responder};
-use srv_storage::diesel::{insert_into, prelude::*, RunQueryDsl};
-use srv_storage::{DbConnection, DbPool};
+use srv_storage::{
+    diesel::{insert_into, prelude::*},
+    models::signature::{NewSignature, Signature},
+    prelude::RunQueryDsl,
+    schema::signatures,
+    DbConnection, DbPool,
+};
 
 #[post("/signatures")]
 pub async fn add_signature(
@@ -14,8 +16,6 @@ pub async fn add_signature(
     let signature = req.into_inner();
 
     let uid = web::block(move || {
-        // Obtaining a connection from the pool is also a potentially blocking operation.
-        // So, it should be called within the `web::block` closure, as well.
         let mut conn = pool.get()?;
         create_signature(&mut conn, signature)
     })
@@ -58,9 +58,13 @@ pub async fn query_signature(
 }
 
 #[tracing::instrument(skip(conn))]
-pub fn get_signature(conn: &mut DbConnection, bytes: String) -> Result<Signature, SrvError> {
+pub fn get_signature(
+    conn: &mut DbConnection,
+    bytes: String,
+) -> Result<Option<Signature>, SrvError> {
     let signature = signatures::table
         .filter(signatures::bytes.eq(bytes))
-        .first::<Signature>(conn)?;
+        .first::<Signature>(conn)
+        .optional()?;
     Ok(signature)
 }

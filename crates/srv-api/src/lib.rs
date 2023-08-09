@@ -12,15 +12,14 @@ mod async_handles;
 #[cfg(feature = "sync")]
 mod handles;
 
-mod errors;
-mod shutdown;
-
 #[cfg(feature = "async")]
 use crate::async_handles::{add_signature, query_signature};
 
 #[cfg(feature = "sync")]
 use crate::handles::{add_signature, query_signature};
 
+mod errors;
+mod shutdown;
 use shutdown::shutdown;
 use srv_tracing::init_logging;
 use std::time::Duration;

@@ -1,7 +1,5 @@
 use crate::errors::SrvError;
-
 use actix_web::{get, post, web, HttpResponse, Responder};
-
 use srv_storage::{
     diesel::{insert_into, prelude::*},
     models::signature::{NewSignature, Signature},
@@ -22,22 +20,20 @@ pub async fn add_signature(
 }
 
 /// Run query using Diesel to insert a new database row and return the result.
-#[cfg(feature = "async")]
 #[tracing::instrument(skip(conn))]
 pub async fn create_signature<'a>(
     conn: &mut DbConnection<'a>, // PgConnection,
     new_signature: NewSignature,
 ) -> Result<usize, SrvError> {
-    let uid = insert_into(signatures::table)
+    let rows_inserted = insert_into(signatures::table)
         .values(new_signature)
         .on_conflict(signatures::signature)
         .do_nothing()
         .execute(conn)
         .await?;
-    Ok(uid)
+    Ok(rows_inserted)
 }
 
-#[cfg(feature = "async")]
 #[get("/signatures/{bytes}")]
 pub async fn query_signature(
     pool: web::Data<DbPool>,
@@ -47,18 +43,19 @@ pub async fn query_signature(
 
     let mut conn = pool.get().await?;
     let signature = get_signature(&mut conn, bytes_str).await?;
+
     Ok(HttpResponse::Ok().json(signature))
 }
 
-#[cfg(feature = "async")]
 #[tracing::instrument(skip(conn))]
 pub async fn get_signature<'a>(
     conn: &mut DbConnection<'a>,
     bytes: String,
-) -> Result<Signature, SrvError> {
+) -> Result<Option<Signature>, SrvError> {
     let signature = signatures::table
         .filter(signatures::bytes.eq(bytes))
         .first::<Signature>(conn)
-        .await?;
+        .await
+        .optional()?;
     Ok(signature)
 }
