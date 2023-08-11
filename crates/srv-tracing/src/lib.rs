@@ -11,7 +11,7 @@ pub type BoxLayer<DynLayer> = Box<DynLayer>;
 
 /// Initializes a new [Subscriber].
 pub fn init_logging(srv_name: String, _level: String) -> WorkerGuard {
-    let srv_name = std::env::var("APP_NAME").unwrap_or(srv_name.to_string());
+    let srv_name = std::env::var("APP_NAME").unwrap_or(srv_name);
     // Start a new Jaeger trace pipeline.
     // Spans are exported in batch - recommended setup for a production application.
     global::set_text_map_propagator(TraceContextPropagator::new());
@@ -26,11 +26,11 @@ pub fn init_logging(srv_name: String, _level: String) -> WorkerGuard {
     // Tunable via `RUST_LOG` env variable
     let env_filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("INFO"));
 
-    let file_appended = tracing_appender::rolling::daily("./logs".to_string(), "api".to_string());
+    let file_appended = tracing_appender::rolling::daily("./logs", "api");
     let (non_blocking, guard) = tracing_appender::non_blocking(file_appended);
 
     // Create a `tracing` layer to emit spans as structured logs to file system
-    let file_layer = BunyanFormattingLayer::new(srv_name.into(), non_blocking);
+    let file_layer = BunyanFormattingLayer::new(srv_name, non_blocking);
 
     // Create a `tracing` layer to emit spans as structured logs to stdout
     let std_layer = fmt::layer().with_writer(std::io::stderr);
@@ -43,7 +43,7 @@ pub fn init_logging(srv_name: String, _level: String) -> WorkerGuard {
         .with(JsonStorageLayer)
         .with(std_layer);
 
-    let _ = subscriber.init();
+    subscriber.init();
     guard
 }
 

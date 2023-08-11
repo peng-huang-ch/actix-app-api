@@ -72,7 +72,7 @@ where
 impl actix_web::error::ResponseError for SrvError {
     fn status_code(&self) -> StatusCode {
         match self.error_kind {
-            SrvErrorKind::Custom(code, _) => StatusCode::from(code),
+            SrvErrorKind::Custom(code, _) => code,
             SrvErrorKind::ValidationError(_) => StatusCode::BAD_REQUEST,
             SrvErrorKind::NotFound(_) => StatusCode::NOT_FOUND,
             SrvErrorKind::Any(_) => StatusCode::INTERNAL_SERVER_ERROR,

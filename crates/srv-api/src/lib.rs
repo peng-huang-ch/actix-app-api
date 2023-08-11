@@ -65,7 +65,10 @@ pub async fn init() -> std::io::Result<()> {
         .expect("shutdown tracer provider failed.");
 
         // Wrap the future with a `Timeout` set to expire in 10 seconds.
-        if let Err(_) = tokio::time::timeout(Duration::from_secs(10), rx).await {
+        if tokio::time::timeout(Duration::from_secs(10), rx)
+            .await
+            .is_err()
+        {
             warn!("timed out while shutting down tracing, exiting anyway");
         };
     });
