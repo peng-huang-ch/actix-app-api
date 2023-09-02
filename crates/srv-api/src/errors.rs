@@ -76,7 +76,7 @@ impl actix_web::error::ResponseError for SrvError {
             SrvErrorKind::ValidationError(_) => StatusCode::BAD_REQUEST,
             SrvErrorKind::NotFound(_) => StatusCode::NOT_FOUND,
             SrvErrorKind::Any(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            // SrvErrorKind::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            SrvErrorKind::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }

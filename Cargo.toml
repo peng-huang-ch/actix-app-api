@@ -4,6 +4,7 @@ members = [
 	"crates/srv-api",
 	"crates/srv-storage", # storage, pg
 	"crates/srv-tracing",
+	"crates/token-list",
 ]
 
 # Explicitly set the resolver to version 2, which is the default for packages with edition >= 2021

@@ -6,17 +6,7 @@ use tokio::sync::oneshot;
 use tracing::{debug, warn};
 use tracing_actix_web::TracingLogger;
 
-#[cfg(feature = "async")]
-mod async_handles;
-
-#[cfg(feature = "sync")]
-mod handles;
-
-#[cfg(feature = "async")]
-use crate::async_handles::{add_signature, query_signature};
-
-#[cfg(feature = "sync")]
-use crate::handles::{add_signature, query_signature};
+mod handlers;
 
 mod errors;
 mod shutdown;
@@ -41,8 +31,11 @@ pub async fn init() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(pool.clone()))
             .wrap(TracingLogger::default())
-            .service(add_signature)
-            .service(query_signature)
+            .service(handlers::health::get_health)
+            .service(handlers::signatures::add_signature)
+            .service(handlers::signatures::query_signature)
+            .service(handlers::tokens::add_tokens)
+            .service(handlers::tokens::query_token)
     })
     .disable_signals()
     .bind("127.0.0.1:8090")?

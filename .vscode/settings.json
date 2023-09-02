@@ -2,5 +2,10 @@
 	"cSpell.words": [
 		"chrono",
 		"opentelemetry"
+	],
+	"rust-analyzer.linkedProjects": [
+		"./crates/srv-storage/Cargo.toml",
+		"./crates/srv-api/Cargo.toml",
+		"./crates/srv-storage/Cargo.toml"
 	]
 }

@@ -11,7 +11,6 @@ pub type BoxLayer<DynLayer> = Box<DynLayer>;
 
 /// Initializes a new [Subscriber].
 pub fn init_logging(srv_name: String, _level: String) -> WorkerGuard {
-    let srv_name = std::env::var("APP_NAME").unwrap_or(srv_name);
     // Start a new Jaeger trace pipeline.
     // Spans are exported in batch - recommended setup for a production application.
     global::set_text_map_propagator(TraceContextPropagator::new());
