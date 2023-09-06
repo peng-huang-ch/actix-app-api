@@ -18,10 +18,9 @@ pub struct DbSignature {
 
 #[derive(Insertable, Debug, Clone, Serialize, Deserialize)]
 #[diesel(table_name = crate::schema::signatures)]
-pub struct NewSignature {
+pub struct Signature {
     pub signature: String,
     pub bytes: String,
-    pub abi: Option<String>,
 }
 
 #[cfg(feature = "async")]
@@ -58,10 +57,10 @@ pub fn get_signature(
 #[tracing::instrument(skip(conn))]
 pub async fn create_signature<'a>(
     conn: &mut DbConnection<'a>, // PgConnection,
-    new_signature: NewSignature,
+    signatures: Vec<Signature>,
 ) -> Result<usize, DbError> {
     let rows_inserted = insert_into(signatures::table)
-        .values(new_signature)
+        .values(signatures)
         .on_conflict(signatures::signature)
         .do_nothing()
         .execute(conn)
@@ -73,10 +72,10 @@ pub async fn create_signature<'a>(
 #[tracing::instrument(skip(conn))]
 pub async fn create_signature<'a>(
     conn: &mut DbConnection,
-    new_signature: NewSignature,
+    signatures: Vec<Signature>,
 ) -> Result<usize, DbError> {
     let rows_inserted = insert_into(signatures::table)
-        .values(new_signature)
+        .values(signatures)
         .on_conflict(signatures::signature)
         .do_nothing()
         .execute(conn)?;

@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
+	"crates/4bytes",
 	"crates/srv-api",
 	"crates/srv-storage", # storage, pg
 	"crates/srv-tracing",
@@ -24,13 +25,3 @@ serde_json = "1.0.1"
 
 # tracing
 tracing = "0.1.37"
-
-# opentelemetry
-opentelemetry = { version = "0.19.0", features = [
-	"rt-tokio",
-	"rt-tokio-current-thread",
-] }
-opentelemetry-jaeger = { version = "0.18.0", features = [
-	"rt-tokio",
-	"rt-tokio-current-thread",
-] }

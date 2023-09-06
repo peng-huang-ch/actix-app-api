@@ -6,10 +6,14 @@ use `cargo run -p srv-api` to start the server
 
 support modules:
 
-- [ ] token list
+- [x] token list
 
-  - [ ][polygon-token-list](https://github.com/maticnetwork/polygon-token-list) polygon
-  - [ ][uniswap-token-list](https://github.com/Uniswap/token-lists)
+  - [x] [polygon-token-list](https://github.com/maticnetwork/polygon-token-list) polygon
+  - [x] [uniswap-token-list](https://github.com/Uniswap/token-lists)
+
+- [ ] 4bytes
+  - [ ] [4bytes](https://www.4byte.directory/)
+  - [ ] [ethereum-lists/4bytes](https://github.com/ethereum-lists/4bytes)
 
 project structure:
 

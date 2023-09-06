@@ -1,14 +1,14 @@
 use crate::errors::SrvError;
 use actix_web::{get, post, web, HttpResponse, Responder};
 use srv_storage::{
-    models::signatures::{create_signature, get_signature, NewSignature},
+    models::signatures::{create_signature, get_signature, Signature},
     DbPool,
 };
 
 #[post("/signatures")]
 pub async fn add_signature(
     pool: web::Data<DbPool>,
-    req: web::Json<NewSignature>,
+    req: web::Json<Vec<Signature>>,
 ) -> actix_web::Result<impl Responder, SrvError> {
     let signature = req.into_inner();
     let mut conn = pool.get().await?;
