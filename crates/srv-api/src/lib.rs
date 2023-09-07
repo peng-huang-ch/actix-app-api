@@ -16,6 +16,11 @@ use std::time::Duration;
 
 pub async fn init() -> std::io::Result<()> {
     dotenvy::dotenv().expect(".env file not found");
+    let port: u16 = std::env::var("PORT")
+        .expect("Expected PORT to be set")
+        .parse()
+        .expect("Expected PORT to be a number");
+    let addr = format!("0.0.0.0:{}", port);
     let guard = init_logging("app".to_string(), "debug".to_string());
 
     debug!(target: "init", "Initializing database...");
@@ -38,7 +43,7 @@ pub async fn init() -> std::io::Result<()> {
             .service(handlers::tokens::query_token)
     })
     .disable_signals()
-    .bind("127.0.0.1:8090")?
+    .bind(addr)?
     .run();
 
     let srv_handle = srv.handle();
