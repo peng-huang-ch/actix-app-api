@@ -21,8 +21,8 @@ pub async fn query_signature(
     pool: web::Data<DbPool>,
     req: web::Path<String>,
 ) -> actix_web::Result<impl Responder, SrvError> {
-    let bytes_str = req.into_inner();
+    let hash = req.into_inner();
     let mut conn = pool.get().await?;
-    let signature = get_signature(&mut conn, bytes_str).await?;
+    let signature = get_signature(&mut conn, hash).await?;
     Ok(HttpResponse::Ok().json(signature))
 }

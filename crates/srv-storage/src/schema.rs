@@ -3,8 +3,8 @@
 diesel::table! {
     signatures (id) {
         id -> Int4,
-        signature -> Varchar,
-        bytes -> Varchar,
+        text -> Varchar,
+        hash -> Varchar,
         abi -> Nullable<Text>,
         created_at -> Timestamp,
         updated_at -> Timestamp,
@@ -26,4 +26,7 @@ diesel::table! {
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(signatures, tokens,);
+diesel::allow_tables_to_appear_in_same_query!(
+    signatures,
+    tokens,
+);

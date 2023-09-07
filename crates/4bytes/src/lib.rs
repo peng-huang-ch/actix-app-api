@@ -21,15 +21,16 @@ mod tests {
             .results
             .into_iter()
             .map(|text| Signature {
-                bytes: text.hex_signature,
-                signature: text.text_signature,
+                hash: text.hex_signature,
+                text: text.text_signature,
+                abi: None,
             })
             .collect::<Vec<_>>();
 
-        let bytes = records[0].bytes.clone();
+        let hash = records[0].hash.clone();
         let _ = signatures::create_signature(&mut conn, records).await?;
 
-        let signature = signatures::get_signature(&mut conn, bytes).await?;
+        let signature = signatures::get_signature(&mut conn, hash).await?;
         assert_eq!(signature.is_some(), true);
 
         Ok(())

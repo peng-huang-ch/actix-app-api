@@ -8,8 +8,8 @@ use serde::{Deserialize, Serialize};
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct DbSignature {
     pub id: i32,
-    pub signature: String,
-    pub bytes: String,
+    pub hash: String,
+    pub text: String,
     pub abi: Option<String>,
     #[serde(skip_serializing)]
     pub created_at: chrono::NaiveDateTime,
@@ -19,8 +19,9 @@ pub struct DbSignature {
 #[derive(Insertable, Debug, Clone, Serialize, Deserialize)]
 #[diesel(table_name = crate::schema::signatures)]
 pub struct Signature {
-    pub signature: String,
-    pub bytes: String,
+    pub hash: String,
+    pub text: String,
+    pub abi: Option<String>,
 }
 
 #[cfg(feature = "async")]
@@ -30,10 +31,10 @@ use diesel_async::RunQueryDsl;
 #[tracing::instrument(skip(conn))]
 pub async fn get_signature<'a>(
     conn: &mut DbConnection<'a>,
-    bytes: String,
+    hash: String,
 ) -> Result<Option<DbSignature>, DbError> {
     let signature = signatures::table
-        .filter(signatures::bytes.eq(bytes))
+        .filter(signatures::hash.eq(hash))
         .first::<DbSignature>(conn)
         .await
         .optional()?;
@@ -44,10 +45,10 @@ pub async fn get_signature<'a>(
 #[tracing::instrument(skip(conn))]
 pub fn get_signature(
     conn: &mut DbConnection,
-    bytes: String,
+    hash: String,
 ) -> Result<Option<DbSignature>, DbError> {
     let signature = signatures::table
-        .filter(signatures::bytes.eq(bytes))
+        .filter(signatures::hash.eq(hash))
         .first::<DbSignature>(conn)
         .optional()?;
     Ok(signature)
@@ -61,7 +62,7 @@ pub async fn create_signature<'a>(
 ) -> Result<usize, DbError> {
     let rows_inserted = insert_into(signatures::table)
         .values(signatures)
-        .on_conflict(signatures::signature)
+        .on_conflict((signatures::hash, signatures::text))
         .do_nothing()
         .execute(conn)
         .await?;
@@ -76,7 +77,7 @@ pub async fn create_signature<'a>(
 ) -> Result<usize, DbError> {
     let rows_inserted = insert_into(signatures::table)
         .values(signatures)
-        .on_conflict(signatures::signature)
+        .on_conflict((signatures::hash, signatures::text))
         .do_nothing()
         .execute(conn)?;
     Ok(rows_inserted)
