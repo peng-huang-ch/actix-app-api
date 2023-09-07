@@ -52,7 +52,27 @@ mod tests {
         let records = token_list
             .tokens
             .into_iter()
-            .filter(|token| token.chain_id.is_some())
+            .filter(|token| token.token.chain_id.is_some())
+            .map(|token_ext| {
+                let token = token_ext.token;
+                let mut tokens = vec![token.clone()];
+                if let Some(extensions) = token_ext.extensions {
+                    if let Some(bridge_info) = extensions.bridge_info {
+                        let bridge_tokens = bridge_info
+                            .into_iter()
+                            .map(|(chain_id, token_address)| {
+                                let mut token = token.clone();
+                                token.chain_id = Some(chain_id as i32);
+                                token.address = token_address.token_address;
+                                token
+                            })
+                            .collect::<Vec<_>>();
+                        tokens.extend(bridge_tokens)
+                    }
+                }
+                tokens
+            })
+            .flatten()
             .collect::<Vec<_>>();
 
         let chain_id = records[0].chain_id.clone().unwrap();

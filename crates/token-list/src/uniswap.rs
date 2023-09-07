@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use reqwest::header::USER_AGENT;
 use serde::{Deserialize, Serialize};
 use srv_storage::models::tokens::Token;
@@ -5,7 +7,26 @@ use srv_storage::models::tokens::Token;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TokenList {
     name: String,
-    pub tokens: Vec<Token>,
+    pub tokens: Vec<TokenExt>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TokenExt {
+    #[serde(flatten)]
+    pub token: Token,
+    pub extensions: Option<TokenExtensions>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TokenExtensions {
+    #[serde(rename = "bridgeInfo")]
+    pub bridge_info: Option<HashMap<u32, TokenAddress>>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TokenAddress {
+    #[serde(rename = "tokenAddress")]
+    pub token_address: String,
 }
 
 const UNISWAP_TOKEN_LIST_URL: &str = "https://gateway.ipfs.io/ipns/tokens.uniswap.org";
@@ -33,7 +54,8 @@ mod test {
     #[tokio::main]
     #[test]
     async fn test_get_token_list() -> Result<(), Box<dyn std::error::Error>> {
-        get_token_list(None).await?;
+        let list = get_token_list(None).await?;
+        println!("{:?}", list.tokens);
         Ok(())
     }
 }
