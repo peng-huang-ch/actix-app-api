@@ -1,3 +1,5 @@
+use diesel_migrations::{embed_migrations, EmbeddedMigrations};
+
 #[cfg(not(feature = "async"))]
 mod pg;
 
@@ -23,3 +25,5 @@ pub mod prelude {
 pub use diesel;
 pub mod models;
 pub mod schema;
+
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations");
