@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
+	"bin",
 	"crates/4bytes",
 	"crates/srv-api",
 	"crates/srv-storage", # storage, pg

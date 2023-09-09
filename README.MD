@@ -1,6 +1,19 @@
 # Actix API
 
-use `cargo run -p srv-api` to start the server
+## Start api server
+
+use `cargo run -p srv-api` or `cargo run -p actix-app-api api` to start the server
+
+## Database commands
+
+### migration
+
+`cd crates/srv-storage && diesel migration run`
+see the detail in [diesel.rs](https://diesel.rs/guides/getting-started/)
+
+or
+
+`cargo run -p actix-app-api db migration` to run database migration
 
 ---
 
@@ -11,15 +24,15 @@ support modules:
   - [x] [polygon-token-list](https://github.com/maticnetwork/polygon-token-list) polygon
   - [x] [uniswap-token-list](https://github.com/Uniswap/token-lists)
 
-- [ ] 4bytes
+- [x] 4bytes
   - [ ] [4bytes](https://www.4byte.directory/)
-  - [ ] [ethereum-lists/4bytes](https://github.com/ethereum-lists/4bytes)
+  - [x] [ethereum-lists/4bytes](https://github.com/ethereum-lists/4bytes)
 
 project structure:
 
-- [] use clap
+- [x] use clap
 - [x] use clippy to build
-- [ ] health check
+- [x] health check
 - [ ] prometheus metrics
 - [x] tracing with jaeger
 - [x] tracing with opentelemetry

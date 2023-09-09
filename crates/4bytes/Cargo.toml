@@ -16,7 +16,7 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 
 srv-storage = { version = "0.1.0", path = "../srv-storage", features = [
-	"async",
+	"sync",
 ] }
 
 tokio = { workspace = true, features = ["full"] }

@@ -14,7 +14,7 @@ use shutdown::shutdown;
 use srv_tracing::init_logging;
 use std::time::Duration;
 
-pub async fn init() -> std::io::Result<()> {
+pub async fn init_api() -> std::io::Result<()> {
     dotenvy::dotenv().expect(".env file not found");
     let port: u16 = std::env::var("PORT")
         .expect("Expected PORT to be set")

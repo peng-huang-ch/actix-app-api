@@ -24,9 +24,8 @@ pub async fn init_db(database_url: &str) -> DbPool {
         .expect("could not build connection pool")
 }
 
-#[allow(dead_code)]
 #[tracing::instrument(skip(database_url))]
-async fn run_migrations(database_url: &str) {
+pub async fn run_migrations(database_url: &str) {
     let pool = init_db(database_url).await;
     let async_conn = pool
         .dedicated_connection()
@@ -47,12 +46,14 @@ async fn run_migrations(database_url: &str) {
 #[cfg(test)]
 mod tests {
     use super::{init_db, run_migrations};
-    use diesel::{prelude::*, sql_query, sql_types::Text};
-    use diesel_async::RunQueryDsl;
-    #[derive(QueryableByName)]
-    struct SqlVersion {
-        #[diesel(sql_type = Text)]
-        pub version: String,
+
+    #[tokio::main]
+    #[test]
+    #[cfg(feature = "async")]
+    async fn test_init_db() {
+        dotenvy::dotenv().ok();
+        let database_url = std::env::var("DATABASE_URL").expect("Expected DATABASE_URL to be set");
+        let _ = init_db(database_url.as_str()).await;
     }
 
     #[tokio::main]
@@ -66,17 +67,14 @@ mod tests {
 
     #[tokio::main]
     #[test]
-    async fn test_init_db() {
+    #[cfg(feature = "async")]
+    async fn test_get_db_version() {
+        use crate::models::version::get_db_version;
         dotenvy::dotenv().ok();
         let database_url = std::env::var("DATABASE_URL").expect("Expected DATABASE_URL to be set");
         let pool = init_db(database_url.as_str()).await;
         let mut conn = pool.get().await.expect("could not get connection");
-        let version = sql_query("SELECT version()")
-            .get_result::<SqlVersion>(&mut conn)
-            .await;
-
-        assert!(version.is_ok());
-        let version = version.unwrap();
-        println!("database version {}", version.version);
+        let version = get_db_version(&mut conn).await;
+        println!("database version {}", version);
     }
 }

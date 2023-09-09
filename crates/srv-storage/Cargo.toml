@@ -23,7 +23,6 @@ diesel_migrations = "2.1.0"
 dotenvy = "0.15.7"
 
 [features]
-default = ["sync"]
 sync = ["diesel/postgres", "diesel/r2d2", "diesel/chrono"]
 async = [
 	"diesel-async/postgres",
