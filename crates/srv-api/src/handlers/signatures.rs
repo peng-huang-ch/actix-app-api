@@ -4,7 +4,9 @@ use srv_storage::{
     models::signatures::{create_signature, get_signature, Signature},
     DbPool,
 };
+use srv_tracing::tracing::instrument;
 
+#[instrument(skip(pool))]
 #[post("/signatures")]
 pub async fn add_signature(
     pool: web::Data<DbPool>,
@@ -16,6 +18,7 @@ pub async fn add_signature(
     Ok(HttpResponse::Ok().json(uid))
 }
 
+#[instrument(skip(pool))]
 #[get("/signatures/{bytes}")]
 pub async fn query_signature(
     pool: web::Data<DbPool>,

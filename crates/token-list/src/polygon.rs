@@ -16,11 +16,7 @@ const USER_AGENT_VALUE: &str = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/M
 pub async fn get_token_list(url: Option<String>) -> Result<TokenList, Box<dyn std::error::Error>> {
     let url = url.unwrap_or_else(|| POLYGON_TOKEN_LIST_URL.to_string());
     let client = reqwest::Client::builder().build()?;
-    let response = client
-        .get(url)
-        .header(USER_AGENT, USER_AGENT_VALUE)
-        .send()
-        .await?;
+    let response = client.get(url).header(USER_AGENT, USER_AGENT_VALUE).send().await?;
 
     let body = response.json::<TokenList>().await?;
     Ok(body)

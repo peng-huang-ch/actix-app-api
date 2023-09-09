@@ -22,11 +22,11 @@ srv-storage = { path = "../srv-storage" }
 srv-tracing = { path = "../srv-tracing" }
 
 # opentelemetry
-opentelemetry = { version = "0.19.0", features = [
+opentelemetry = { version = "0.20.0", features = [
 	"rt-tokio",
 	"rt-tokio-current-thread",
 ] }
-opentelemetry-jaeger = { version = "0.18.0", features = [
+opentelemetry-jaeger = { version = "0.19.0", features = [
 	"rt-tokio",
 	"rt-tokio-current-thread",
 ] }
@@ -42,6 +42,7 @@ tracing-subscriber = { version = "0.3.17", features = ["env-filter", "fmt"] }
 validator = "0.16.1"
 
 tokio = { version = "1.29.0", features = ["full"] }
+actix-web-opentelemetry = { version = "0.15.0", features = ["metrics"] }
 
 [features]
 default = ["async"]

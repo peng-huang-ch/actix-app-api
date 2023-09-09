@@ -15,7 +15,7 @@ dotenvy = "0.15.7"
 eyre = "0.6.8"
 
 metrics-exporter-prometheus = "0.12.1"
-metrics-process = "1.0.12"
+metrics-process = "1.0.13"
 
 srv-api = { path = "../crates/srv-api" }
 srv-storage = { path = "../crates/srv-storage", features = ["sync"] }

@@ -13,7 +13,7 @@ pub type DynLayer<S> = dyn Layer<S> + Send + Sync;
 pub type BoxLayer<DynLayer> = Box<DynLayer>;
 
 /// Initializes a new [Subscriber].
-pub fn init_logging(srv_name: String, _level: String) -> WorkerGuard {
+pub fn init_logging(srv_name: String, level: String) -> WorkerGuard {
     // Start a new Jaeger trace pipeline.
     // Spans are exported in batch - recommended setup for a production application.
     global::set_text_map_propagator(TraceContextPropagator::new());
@@ -26,7 +26,7 @@ pub fn init_logging(srv_name: String, _level: String) -> WorkerGuard {
 
     // Filter based on level - trace, debug, info, warn, error
     // Tunable via `RUST_LOG` env variable
-    let env_filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("INFO"));
+    let env_filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(level));
 
     let file_appended = tracing_appender::rolling::daily("./logs", "api");
     let (non_blocking, guard) = tracing_appender::non_blocking(file_appended);

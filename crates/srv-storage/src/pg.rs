@@ -14,9 +14,7 @@ pub type DbRunError = diesel::r2d2::PoolError;
 #[tracing::instrument(skip(database_url))]
 pub async fn init_db(database_url: &str) -> DbPool {
     let manager = ConnectionManager::<PgConnection>::new(database_url);
-    Pool::builder()
-        .build(manager)
-        .expect("could not build connection pool")
+    Pool::builder().build(manager).expect("could not build connection pool")
 }
 
 #[allow(dead_code)]
@@ -24,8 +22,7 @@ pub async fn init_db(database_url: &str) -> DbPool {
 pub async fn run_migrations(database_url: &str) {
     let pool = init_db(database_url).await;
     let mut conn = pool.get().expect("could not get connection");
-    conn.run_pending_migrations(crate::MIGRATIONS)
-        .expect("failed to run migrations");
+    conn.run_pending_migrations(crate::MIGRATIONS).expect("failed to run migrations");
 }
 
 #[cfg(test)]

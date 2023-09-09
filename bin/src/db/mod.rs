@@ -6,13 +6,7 @@ use srv_storage::{init_db, models::version::get_db_version, run_migrations};
 /// `api db` command
 #[derive(Debug, Parser)]
 pub struct Command {
-    #[arg(
-        long,
-        value_name = "database url",
-        verbatim_doc_comment,
-        default_value_t,
-        global = true
-    )]
+    #[arg(long, value_name = "database url", verbatim_doc_comment, default_value_t, global = true)]
     database_url: String,
 
     #[clap(subcommand)]

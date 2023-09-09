@@ -1,11 +1,12 @@
 use crate::errors::SrvError;
 use actix_web::{get, post, web, HttpResponse, Responder};
 use srv_storage::{
-    models::tokens::Token,
-    models::tokens::{create_tokens, get_token_by_address},
+    models::tokens::{create_tokens, get_token_by_address, Token},
     DbPool,
 };
+use srv_tracing::tracing::instrument;
 
+#[instrument(skip(pool))]
 #[post("/tokens")]
 pub async fn add_tokens(
     pool: web::Data<DbPool>,
@@ -17,6 +18,7 @@ pub async fn add_tokens(
     Ok(HttpResponse::Ok().json(uid))
 }
 
+#[instrument(skip(pool))]
 #[get("/tokens/{chain_id}/{address}")]
 pub async fn query_token(
     pool: web::Data<DbPool>,

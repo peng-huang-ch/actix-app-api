@@ -1,6 +1,7 @@
 #![feature(async_closure)]
 
 use actix_web::{web, App, HttpServer};
+use actix_web_opentelemetry::{RequestMetrics, RequestTracing};
 use srv_storage::init_db;
 use tokio::sync::oneshot;
 use tracing::{debug, warn};
@@ -35,6 +36,8 @@ pub async fn init_api() -> std::io::Result<()> {
     let srv: actix_web::dev::Server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(pool.clone()))
+            .wrap(RequestTracing::new())
+            .wrap(RequestMetrics::default())
             .wrap(TracingLogger::default())
             .service(handlers::health::get_health)
             .service(handlers::signatures::add_signature)
@@ -63,10 +66,7 @@ pub async fn init_api() -> std::io::Result<()> {
         .expect("shutdown tracer provider failed.");
 
         // Wrap the future with a `Timeout` set to expire in 10 seconds.
-        if tokio::time::timeout(Duration::from_secs(10), rx)
-            .await
-            .is_err()
-        {
+        if tokio::time::timeout(Duration::from_secs(10), rx).await.is_err() {
             warn!("timed out while shutting down tracing, exiting anyway");
         };
     });
