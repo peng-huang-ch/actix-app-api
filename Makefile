@@ -33,7 +33,6 @@ help: ## Display this help.
 install: ## Build and install the app binary under `~/.cargo/bin`.
 	cargo install --path bin --bin actix-app-api --force --locked --features $(FEATURES) $(CARGO_INSTALL_EXTRA_FLAGS)
 
-
 # The current git tag will be used as the version in the output file names. You
 # will likely need to use `git tag` and create a semver tag (e.g., `v0.2.3`).
 ##@ Test
@@ -63,7 +62,6 @@ clean: ## Perform a `cargo` clean and remove the binary and test vectors directo
 	cargo clean
 	rm -rf $(BIN_DIR)
 
-
 	@echo "Building DB debugging tools..."
     # `IOARENA=1` silences benchmarking info message that is printed to stderr
 	@$(MAKE) -C $(MDBX_PATH) IOARENA=1 tools > /dev/null
@@ -79,3 +77,8 @@ clean: ## Perform a `cargo` clean and remove the binary and test vectors directo
 	@$(MAKE) -C $(MDBX_PATH) IOARENA=1 clean > /dev/null
 	@echo "Run \"$(DB_TOOLS_DIR)/mdbx_stat\" for the info about MDBX db file."
 	@echo "Run \"$(DB_TOOLS_DIR)/mdbx_chk\" for the MDBX db file integrity check."
+
+##@ API
+.PHONY: api
+api: 
+	cargo run -p actix-app-api api
