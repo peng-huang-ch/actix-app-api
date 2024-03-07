@@ -29,9 +29,9 @@ impl Command {
     /// Execute `node` command
     pub async fn execute(self) -> eyre::Result<()> {
         dotenvy::dotenv().ok();
-        let _ = std::env::var("DATABASE_URL").expect("Expected DATABASE_URL to be set");
+        let _url = std::env::var("DATABASE_URL").expect("Expected DATABASE_URL to be set");
         info!(target: "app::cli", "app {} starting", SHORT_VERSION);
-        let _ = init_api().await?;
+        let _init = init_api().await?;
         info!(target: "reth::cli", "app has exited.");
         Ok(())
     }

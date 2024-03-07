@@ -33,7 +33,7 @@ mod tests {
         let _ = tokens::create_tokens(&mut conn, records).await?;
 
         let token = tokens::get_token_by_address(&mut conn, CHAIN_ID, address).await?;
-        assert_eq!(token.is_some(), true);
+        assert!(token.is_some());
 
         Ok(())
     }
@@ -53,7 +53,7 @@ mod tests {
             .tokens
             .into_iter()
             .filter(|token| token.token.chain_id.is_some())
-            .map(|token_ext| {
+            .flat_map(|token_ext| {
                 let token = token_ext.token;
                 let mut tokens = vec![token.clone()];
                 if let Some(extensions) = token_ext.extensions {
@@ -72,15 +72,14 @@ mod tests {
                 }
                 tokens
             })
-            .flatten()
             .collect::<Vec<_>>();
 
-        let chain_id = records[0].chain_id.clone().unwrap();
+        let chain_id = records[0].chain_id.unwrap();
         let address = records[0].address.clone();
         let _ = tokens::create_tokens(&mut conn, records).await?;
 
         let token = tokens::get_token_by_address(&mut conn, chain_id, address).await?;
-        assert_eq!(token.is_some(), true);
+        assert!(token.is_some());
 
         Ok(())
     }

@@ -31,7 +31,7 @@ mod tests {
         let _ = signatures::create_signature(&mut conn, records).await?;
 
         let signature = signatures::get_signature(&mut conn, hash).await?;
-        assert_eq!(signature.is_some(), true);
+        assert!(signature.is_some());
 
         Ok(())
     }

@@ -29,7 +29,7 @@ impl Command {
 
         match self.command {
             Subcommands::Migration { .. } => {
-                let _ = run_migrations(database_url);
+                let _migrated = run_migrations(database_url);
                 println!("database migrations complete")
             }
             Subcommands::Version {} => {
