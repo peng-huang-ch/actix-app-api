@@ -12,7 +12,7 @@ clap = { version = "4.4.1", features = ["derive", "cargo"] }
 confy = "0.5.1"
 const-str = "0.5.6"
 dotenvy = "0.15.7"
-eyre = "0.6.8"
+eyre = "0.6.12"
 
 metrics-exporter-prometheus = "0.12.1"
 metrics-process = "1.0.13"
